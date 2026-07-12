@@ -13,15 +13,11 @@ RUN apt-get update \
         openssl \
     && rm -rf /var/lib/apt/lists/*
 
-ARG XRAY_VERSION=1.8.23
-RUN set -eux; \
-    curl -fSL \
-        https://github.com/XTLS/Xray-core/releases/download/v${XRAY_VERSION}/Xray-linux-64.zip \
-        -o /tmp/xray.zip \
-    && unzip -o /tmp/xray.zip -d /tmp/xray \
-    && mkdir -p /usr/local/bin /usr/local/share/xray \
-    && install -m 0755 /tmp/xray/xray /usr/local/bin/xray \
-    && cp -r /tmp/xray/* /usr/local/share/xray/ \
+# به‌جای پین‌کردن دستی نسخه‌ی قدیمی Xray (که باعث ناسازگاری با کانفیگ‌های
+# جدید پنل و کرش خاموش می‌شد)، از همون اسکریپت رسمی Marzban-scripts استفاده
+# می‌کنیم که همیشه آخرین نسخه سازگار را نصب می‌کند — دقیقاً همون اسکریپتی
+# که خود پنل هم برای نصب Xray استفاده می‌کند.
+RUN curl -L https://github.com/Gozargah/Marzban-scripts/raw/master/install_latest_xray.sh | bash \
     && /usr/local/bin/xray version
 
 COPY requirements.txt /code/
